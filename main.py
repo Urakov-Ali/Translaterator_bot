@@ -4,22 +4,31 @@ Spyder Editor
 
 This is a temporary script file.
 """
-import telebot
+
+import logging
+from aiogram import Bot, Dispatcher, executor, types
 from transliterate import to_cyrillic, to_latin
 
-TOKEN = '5112320592:AAF2GpYXBS0QVBSkwqpT0wo2dpt1oZp-QTg'
-bot = telebot.TeleBot(TOKEN, parse_mode=None)
+API_TOKEN = '5112320592:AAF2GpYXBS0QVBSkwqpT0wo2dpt1oZp-QTg'
 
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-	bot.reply_to(message, '''Salom kiril lotin botga hush kelibsiz.
-Marhamat so'z kiriting: ''')
-@bot.message_handler(func=lambda m: True)
-def javob(message):
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# Initialize bot and dispatcher
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher(bot)
+
+
+@dp.message_handler(commands=['start'])
+async def send_welcome(message: types.Message):
+    await message.reply('''Салом Кирилбот га хуш келибсиз менга матнингизни жунатинг! : ''')
+
+
+@dp.message_handler()
+async def jav_ob(message: types.Message):
     msg = message.text
-    jv = lambda msg: to_cyrillic(msg) if msg.isascii() else to_latin(msg)
-    bot.reply_to(message, jv(msg))
-    
-bot.polling()
-
-
+    msg = (to_cyrillic(msg)) if msg.isascii() else (to_latin(msg))
+    message.reply(msg)
+    await message.reply(msg)
+if __name__ == '__main__':
+    executor.start_polling(dp, skip_updates=True)
