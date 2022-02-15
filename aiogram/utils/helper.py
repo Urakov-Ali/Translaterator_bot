@@ -79,7 +79,7 @@ class HelperMode(Helper):
     @classmethod
     def _snake_case(cls, text):
         """
-        Transform text to snake case (Based on SCREAMING_SNAKE_CASE)
+        Transform text to snake cale (Based on SCREAMING_SNAKE_CASE)
 
         :param text:
         :return:
@@ -103,7 +103,10 @@ class HelperMode(Helper):
             if symbol == '_' and pos > 0:
                 need_upper = True
             else:
-                result += symbol.upper() if need_upper else symbol.lower()
+                if need_upper:
+                    result += symbol.upper()
+                else:
+                    result += symbol.lower()
                 need_upper = False
         if first_upper:
             result = result[0].upper() + result[1:]
@@ -198,14 +201,10 @@ class OrderedHelperMeta(type):
     def __new__(mcs, name, bases, namespace, **kwargs):
         cls = super().__new__(mcs, name, bases, namespace)
 
-        props_keys = [
-            prop_name
-            for prop_name in (
-                name
-                for name, prop in namespace.items()
-                if isinstance(prop, (Item, ListItem))
-            )
-        ]
+        props_keys = []
+
+        for prop_name in (name for name, prop in namespace.items() if isinstance(prop, (Item, ListItem))):
+            props_keys.append(prop_name)
 
         setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
 

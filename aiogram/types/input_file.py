@@ -5,7 +5,7 @@ import logging
 import os
 import secrets
 from pathlib import Path
-from typing import Union, Optional
+from typing import Union
 
 import aiohttp
 
@@ -27,7 +27,7 @@ class InputFile(base.TelegramObject):
     https://core.telegram.org/bots/api#inputfile
     """
 
-    def __init__(self, path_or_bytesio: Union[str, io.IOBase, Path, '_WebPipe'], filename=None, conf=None):
+    def __init__(self, path_or_bytesio: Union[str, io.IOBase, Path], filename=None, conf=None):
         """
 
         :param path_or_bytesio:
@@ -41,9 +41,13 @@ class InputFile(base.TelegramObject):
             self._path = path_or_bytesio
             if filename is None:
                 filename = os.path.split(path_or_bytesio)[-1]
-        elif isinstance(path_or_bytesio, (io.IOBase, _WebPipe)):
+        elif isinstance(path_or_bytesio, io.IOBase):
             self._path = None
             self._file = path_or_bytesio
+        elif isinstance(path_or_bytesio, _WebPipe):
+            self._path = None
+            self._file = path_or_bytesio
+
         elif isinstance(path_or_bytesio, Path):
             self._file = path_or_bytesio.open("rb")
             self._path = path_or_bytesio.resolve()
@@ -118,7 +122,7 @@ class InputFile(base.TelegramObject):
         if filename is None:
             filename = pipe.name
 
-        return cls(pipe, filename)
+        return cls(pipe, filename, chunk_size)
 
     def save(self, filename, chunk_size=CHUNK_SIZE):
         """
@@ -159,8 +163,8 @@ class _WebPipe:
         self.url = url
         self.chunk_size = chunk_size
 
-        self._session: Optional[aiohttp.ClientSession] = None
-        self._response: Optional[aiohttp.ClientResponse] = None
+        self._session: aiohttp.ClientSession = None
+        self._response: aiohttp.ClientResponse = None
         self._reader = None
         self._name = None
 
@@ -170,7 +174,10 @@ class _WebPipe:
     def name(self):
         if not self._name:
             *_, part = self.url.rpartition('/')
-            self._name = part or secrets.token_urlsafe(24)
+            if part:
+                self._name = part
+            else:
+                self._name = secrets.token_urlsafe(24)
         return self._name
 
     async def open(self):
@@ -182,7 +189,7 @@ class _WebPipe:
 
     async def close(self):
         if self._response and not self._response.closed:
-            self._response.close()
+            await self._response.close()
         if self._session and not self._session.closed:
             await self._session.close()
         if self._lock.locked():

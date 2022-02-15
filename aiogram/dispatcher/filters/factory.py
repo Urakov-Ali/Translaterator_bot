@@ -48,13 +48,9 @@ class FiltersFactory:
         :param full_config:
         :return:
         """
-        filters_set = list(
-            self._resolve_registered(
-                event_handler,
-                {k: v for k, v in full_config.items() if v is not None},
-            )
-        )
-
+        filters_set = []
+        filters_set.extend(self._resolve_registered(event_handler,
+                                                    {k: v for k, v in full_config.items() if v is not None}))
         if custom_filters:
             filters_set.extend(custom_filters)
 

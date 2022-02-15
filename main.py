@@ -30,5 +30,6 @@ async def jav_ob(message: types.Message):
     msg = (to_cyrillic(msg)) if msg.isascii() else (to_latin(msg))
     message.reply(msg)
     await message.reply(msg)
+
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

@@ -27,9 +27,9 @@ class TextDecoration(ABC):
         :return:
         """
         if entity.type in {"bot_command", "url", "mention", "phone_number"}:
-            # These entities should not be changed
+            # This entities should not be changed
             return text
-        if entity.type in {"bold", "italic", "spoiler", "code", "underline", "strikethrough"}:
+        if entity.type in {"bold", "italic", "code", "underline", "strikethrough"}:
             return cast(str, getattr(self, entity.type)(value=text))
         if entity.type == "pre":
             return (
@@ -116,10 +116,6 @@ class TextDecoration(ABC):
         pass
 
     @abstractmethod
-    def spoiler(self, value: str) -> str:  # pragma: no cover
-        pass
-
-    @abstractmethod
     def code(self, value: str) -> str:  # pragma: no cover
         pass
 
@@ -154,9 +150,6 @@ class HtmlDecoration(TextDecoration):
     def italic(self, value: str) -> str:
         return f"<i>{value}</i>"
 
-    def spoiler(self, value: str) -> str:
-        return f'<span class="tg-spoiler">{value}</span>'
-
     def code(self, value: str) -> str:
         return f"<code>{value}</code>"
 
@@ -187,9 +180,6 @@ class MarkdownDecoration(TextDecoration):
 
     def italic(self, value: str) -> str:
         return f"_\r{value}_\r"
-
-    def spoiler(self, value: str) -> str:
-        return f"||{value}||"
 
     def code(self, value: str) -> str:
         return f"`{value}`"

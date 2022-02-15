@@ -64,10 +64,10 @@ class User(base.TelegramObject):
         return getattr(self, '_locale')
 
     @property
-    def url(self) -> str:
+    def url(self):
         return f"tg://user?id={self.id}"
 
-    def get_mention(self, name: Optional[str] = None, as_html: Optional[bool] = None) -> str:
+    def get_mention(self, name=None, as_html=None):
         if as_html is None and self.bot.parse_mode and self.bot.parse_mode.lower() == 'html':
             as_html = True
 

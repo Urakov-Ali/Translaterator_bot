@@ -314,7 +314,7 @@ class Executor:
         :param timeout:
         """
         self._prepare_polling()
-        loop = asyncio.get_event_loop()
+        loop: asyncio.AbstractEventLoop = self.loop
 
         try:
             loop.run_until_complete(self._startup_polling())
@@ -365,8 +365,7 @@ class Executor:
         self.dispatcher.stop_polling()
         await self.dispatcher.storage.close()
         await self.dispatcher.storage.wait_closed()
-        session = await self.dispatcher.bot.get_session()
-        await session.close()
+        await self.dispatcher.bot.session.close()
 
     async def _startup_polling(self):
         await self._welcome()

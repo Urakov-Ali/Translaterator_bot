@@ -4,7 +4,7 @@ import typing
 import warnings
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from babel.support import LazyProxy
 
@@ -279,10 +279,9 @@ class Text(Filter):
         elif check == 0:
             raise ValueError(f"No one mode is specified!")
 
-        equals, contains, endswith, startswith = map(
-            lambda e: [e] if isinstance(e, (str, LazyProxy)) else e,
-            (equals, contains, endswith, startswith),
-        )
+        equals, contains, endswith, startswith = map(lambda e: [e] if isinstance(e, str) or isinstance(e, LazyProxy)
+        else e,
+                                                     (equals, contains, endswith, startswith))
         self.equals = equals
         self.contains = contains
         self.endswith = endswith

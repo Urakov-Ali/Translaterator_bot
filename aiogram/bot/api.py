@@ -188,6 +188,8 @@ def compose_data(params=None, files=None):
 class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
+
+    List is updated to Bot API 5.3
     """
     mode = HelperMode.lowerCamelCase
 
@@ -228,15 +230,11 @@ class Methods(Helper):
     RESTRICT_CHAT_MEMBER = Item()  # restrictChatMember
     PROMOTE_CHAT_MEMBER = Item()  # promoteChatMember
     SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE = Item()  # setChatAdministratorCustomTitle
-    BAN_CHAT_SENDER_CHAT = Item()  # banChatSenderChat
-    UNBAN_CHAT_SENDER_CHAT = Item()  # unbanChatSenderChat
     SET_CHAT_PERMISSIONS = Item()  # setChatPermissions
     EXPORT_CHAT_INVITE_LINK = Item()  # exportChatInviteLink
     CREATE_CHAT_INVITE_LINK = Item()  # createChatInviteLink
     EDIT_CHAT_INVITE_LINK = Item()  # editChatInviteLink
     REVOKE_CHAT_INVITE_LINK = Item()  # revokeChatInviteLink
-    APPROVE_CHAT_JOIN_REQUEST = Item()  # approveChatJoinRequest
-    DECLINE_CHAT_JOIN_REQUEST = Item()  # declineChatJoinRequest
     SET_CHAT_PHOTO = Item()  # setChatPhoto
     DELETE_CHAT_PHOTO = Item()  # deleteChatPhoto
     SET_CHAT_TITLE = Item()  # setChatTitle

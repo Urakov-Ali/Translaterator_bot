@@ -2,7 +2,7 @@ import abc
 import datetime
 import weakref
 
-__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists', 'ConstField')
+__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists')
 
 
 class BaseField(metaclass=abc.ABCMeta):
@@ -118,7 +118,7 @@ class Field(BaseField):
 
 class ListField(Field):
     """
-    The field contains a list of objects
+    Field contains list ob objects
     """
 
     def __init__(self, *args, **kwargs):
@@ -131,14 +131,22 @@ class ListField(Field):
     def serialize(self, value):
         if value is None:
             return None
+
+        result = []
         serialize = super(ListField, self).serialize
-        return [serialize(item) for item in value]
+        for item in value:
+            result.append(serialize(item))
+        return result
 
     def deserialize(self, value, parent=None):
         if value is None:
             return None
+
+        result = []
         deserialize = super(ListField, self).deserialize
-        return [deserialize(item, parent=parent) for item in value]
+        for item in value:
+            result.append(deserialize(item, parent=parent))
+        return result
 
 
 class ListOfLists(Field):
@@ -146,7 +154,9 @@ class ListOfLists(Field):
         result = []
         serialize = super(ListOfLists, self).serialize
         for row in value:
-            row_result = [serialize(item) for item in row]
+            row_result = []
+            for item in row:
+                row_result.append(serialize(item))
             result.append(row_result)
         return result
 
@@ -155,14 +165,16 @@ class ListOfLists(Field):
         deserialize = super(ListOfLists, self).deserialize
         if hasattr(value, '__iter__'):
             for row in value:
-                row_result = [deserialize(item, parent=parent) for item in row]
+                row_result = []
+                for item in row:
+                    row_result.append(deserialize(item, parent=parent))
                 result.append(row_result)
         return result
 
 
 class DateTimeField(Field):
     """
-    In this field stored datetime
+    In this field st_ored datetime
 
     in: unixtime
     out: datetime
@@ -192,13 +204,5 @@ class TextField(Field):
 
     def deserialize(self, value, parent=None):
         if value is not None and not isinstance(value, str):
-            raise TypeError(f"Field {self.alias!r} should be str not {type(value).__name__!r}")
+            raise TypeError(f"Field '{self.alias}' should be str not {type(value).__name__}")
         return value
-
-
-class ConstField(Field):
-    def __init__(self, default=None, **kwargs):
-        super(ConstField, self).__init__(default=default, **kwargs)
-
-    def __set__(self, instance, value):
-        raise TypeError(f"Field {self.alias!r} is not mutable")

@@ -78,7 +78,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     Abstract class for telegram objects
     """
 
-    def __init__(self, conf: typing.Dict[str, typing.Any] = None, **kwargs: typing.Any) -> None:
+    def __init__(self, conf: typing.Dict[str, typing.Any]=None, **kwargs: typing.Any) -> None:
         """
         Deserialize object
 
@@ -211,15 +211,6 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         """
         return self.as_json()
 
-    def __repr__(self) -> str:
-        """
-        Return object readable representation.
-
-        Example: <ObjectName {"id": 123456}>
-        :return: object class name and object data as a string
-        """
-        return f"<{type(self).__name__} {self}>"
-
     def __getitem__(self, item: typing.Union[str, int]) -> typing.Any:
         """
         Item getter (by key)
@@ -262,7 +253,8 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
 
         :return:
         """
-        yield from self.to_python().items()
+        for item in self.to_python().items():
+            yield item
 
     def iter_keys(self) -> typing.Generator[typing.Any, None, None]:
         """
