@@ -21,7 +21,8 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.reply('''Салом Кирилбот га хуш келибсиз менга матнингизни жунатинг! : ''')
+    await message.reply('''Салом Кирилбот га хуш келибсиз 
+менга матнингизни жунатинг! : ''')
 
 
 @dp.message_handler()
