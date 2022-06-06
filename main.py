@@ -9,7 +9,7 @@ import logging
 from aiogram import Bot, Dispatcher, executor, types
 from transliterate import to_cyrillic, to_latin
 
-API_TOKEN = '5112320592:AAF2GpYXBS0QVBSkwqpT0wo2dpt1oZp-QTg'
+API_TOKEN = 'YOUR TOKEN HERE'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
